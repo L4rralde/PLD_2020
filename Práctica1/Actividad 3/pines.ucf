@@ -1,0 +1,17 @@
+net clk loc = b8; 
+
+net res loc = h13;  
+net hab loc = b18;
+net dir loc = g18;
+net OnDisp<0> loc = f17;
+net OnDisp<1> loc = h17;
+net OnDisp<2> loc = c18;
+net OnDisp<3> loc = f15;
+
+net disp<6> loc = l18;
+net disp<5> loc = f18; 
+net disp<4> loc = d17; 
+net disp<3> loc = d16; 
+net disp<2> loc = g14; 
+net disp<1> loc = j17; 
+net disp<0> loc = h14; 
