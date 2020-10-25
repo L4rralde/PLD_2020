@@ -1,0 +1,7 @@
+net clk_in loc = b8;
+
+net sel<0> loc = r17; 
+net sel<1> loc = g18; 
+
+net speaker loc = l17; 
+//k15
