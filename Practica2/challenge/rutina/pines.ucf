@@ -1,0 +1,40 @@
+//CLK a 50 MHz. 
+net "clk" loc = "B8"; 
+
+//Botón de reset
+net "reset" loc = "H13"; 
+
+//Segmentos de display
+net "DISPLAY(7)" loc = "L18";
+net "DISPLAY(6)" loc = "F18"; 
+net "DISPLAY(5)" loc = "D17";
+net "DISPLAY(4)" loc = "D16";
+net "DISPLAY(3)" loc = "G14";
+net "DISPLAY(2)" loc = "J17";
+net "DISPLAY(1)" loc = "H14";
+net "DISPLAY(0)" loc = "C17";
+
+//Ánodos
+net "AN(3)" loc = "F17";
+net "AN(2)" loc = "H17"; 
+net "AN(1)" loc = "C18";
+net "AN(0)" loc = "F15"; 
+
+//Rx
+net "Rx" loc = "M15";
+//Tx
+//net "Tx" loc = "L17";
+
+//Servo
+net "PWM" loc = "T17";  
+
+//Leds
+net "leds(7)" loc = "R4";
+net "leds(6)" loc = "F4";
+net "leds(5)" loc = "P15";
+net "leds(4)" loc = "E17";
+net "leds(3)" loc = "K14";
+net "leds(2)" loc = "K15";
+net "leds(1)" loc = "J15";
+net "leds(0)" loc = "J14";
+
