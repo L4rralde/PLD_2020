@@ -1,0 +1,28 @@
+//Nexys 2 @50MHz
+
+net "clk_i" loc = "B8"; //Nexys 2 built-in xtal
+
+net "rst_i" loc = "H13"; //Nexys 2 built-in PB3
+
+net "rx_i" loc = "L17"; //Nexys 2 JA3
+
+net "sw_i" loc = "L15"; //Nexys 2 JA1
+
+net "sel_o" loc = "K12"; //Nexys 2 JA2
+
+	//Segments 
+net "DISP[6]" loc = "L18";
+net "DISP[5]" loc = "F18"; 
+net "DISP[4]" loc = "D17";
+net "DISP[3]" loc = "D16";
+net "DISP[2]" loc = "G14";
+net "DISP[1]" loc = "J17";
+net "DISP[0]" loc = "H14";
+
+	//Anodes
+net "AN[0]" loc = "F17";
+net "AN[1]" loc = "H17"; 
+net "AN[2]" loc = "C18";
+net "AN[3]" loc = "F15"; 
+
+net "state" loc = "J14"; //Nexys 2 built-in LED0
