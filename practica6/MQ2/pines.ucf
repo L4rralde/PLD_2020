@@ -1,0 +1,20 @@
+//Nexys 2 @50MHz
+
+net "clk_i" loc = "B8"; //Nexys 2 built-in xtal
+
+net "rx_i" loc = "K12"; //Nexys 2 JA2
+
+	//Segments (Nexys 2 built-in 7-s display segments)
+net "seg_o[6]" loc = "L18";
+net "seg_o[5]" loc = "F18"; 
+net "seg_o[4]" loc = "D17";
+net "seg_o[3]" loc = "D16";
+net "seg_o[2]" loc = "G14";
+net "seg_o[1]" loc = "J17";
+net "seg_o[0]" loc = "H14";
+
+	//Anodes (Nexys 2 built-in 4 7-s display anodes)
+net "an_o[0]" loc = "F17";
+net "an_o[1]" loc = "H17"; 
+net "an_o[2]" loc = "C18";
+net "an_o[3]" loc = "F15"; 
