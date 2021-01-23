@@ -1,0 +1,42 @@
+//Nexys 2 @50MHz
+
+net "clk_i" loc = "B8"; //Nexys 2 built-in xtal
+
+net "rx_i" loc = "K12"; //Nexys 2 JA2
+net "tx_o" loc = "J13"; //Nexys 2 JD1
+
+net "onOff_i" loc = "G18"; //SW0
+
+net "selbtn_i" loc = "B18";
+net "upbtn_i" loc = "E18";
+net "downbtn_i" loc = "D18";
+
+//net "btnstate_d" loc = "F4";
+//zero_i
+
+//gnd
+net "heater_o"	loc = "T17"; //Nexys 2 JB4
+net "motor_o" 	loc = "R15"; //Nexys 2 JB3
+net "zero_i" 	loc = "R18"; //Nexys 2 JB2 
+//net "zero_i" 	loc = "R17"; //Nexys 2 SW7 
+
+net "motor_d" 	loc = "R4"; 
+net "heater_d"	loc = "F4"; 
+	
+	//Segments 
+net "SEG_o[7]" loc = "L18";
+net "SEG_o[6]" loc = "F18"; 
+net "SEG_o[5]" loc = "D17";
+net "SEG_o[4]" loc = "D16";
+net "SEG_o[3]" loc = "G14";
+net "SEG_o[2]" loc = "J17";
+net "SEG_o[1]" loc = "H14";
+net "SEG_o[0]" loc = "C17";
+
+	//Anodes
+net "AN_o[0]" loc = "F17";
+net "AN_o[1]" loc = "H17"; 
+net "AN_o[2]" loc = "C18";
+net "AN_o[3]" loc = "F15"; 
+
+
