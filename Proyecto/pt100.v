@@ -7,11 +7,11 @@ module pt100(
 	
 	//Multiply by rational?
 	//Multiply by an integer then divide by an integer too
-	//For exmaple x = 150/1023
-	//Multiply by a constant
+	//For exmaple x = 140/1023
 	reg [19:0] mult = 20'b0; 
 	always @(ADC_i) 
-		mult = ADC_i*10'h96; 			//Multiply by 600
+		//mult = ADC_i*10'h96; 			//Multiply by 150
+		mult = ADC_i*10'h8C; 			//Multiply by 140
 	assign temp_o = mult[ADC_RES+7:ADC_RES]; 	//Divide by 4096
 endmodule 
 

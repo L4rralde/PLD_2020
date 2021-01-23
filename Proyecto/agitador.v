@@ -5,10 +5,14 @@ module agitador(
 		input upbtn_i, 
 		input downbtn_i, 
 		input rx_i, 
+		inout zero_i, 
 		output motor_o, 
 		output heater_o, 
-		output [6:0] SEG_o, 
-		output [7:0] AN_o
+		output motor_d, 
+		output heater_d,
+		output tx_o, 
+		output [7:0] SEG_o, 
+		output [3:0] AN_o
 	); 
 	
 	wire update; 
@@ -54,31 +58,63 @@ module agitador(
 		.signal_o 	(downbtn_deb)
     );
 	 
-	wire [3:0] tempMode; 
-	wire [3:0] velMode; 
+	wire [2:0] tempMode; 
+	wire [2:0] velMode;  
+	wire dot; 
+	
 	modeCont MCONT_U0(
 		.clk_i 		(clk_i), 
-		.sel_i 		(selbtn_deb), 
+		.sel_i 		(~selbtn_deb), 
 		.rst_i 		(onOff_i), 
-		.up_i			(upbtn_deb), 
-		.down_i		(downbtn_deb), 
+		.up_i		(~upbtn_deb), 
+		.down_i		(~downbtn_deb), 
 		.tempMode_o	(tempMode), 
-		.velMode_o	(velMode)
+		.velMode_o	(velMode), 
+		.btnState_d	(dot)
 	); 	
 	
-	wire [55:0] display; 
+	tempCont CONT_U0(
+		.clk_i		(clk_i), //@100 MHz
+		.rst_i		(zero_i), 
+		.temp_i		(temp), 
+		.tempCase_i (tempMode),//40, 70, 100, 127, 150
+		.PWM_o	  	(heater_o)
+	); 
+	
+	velCont CONT_U1(
+		.clk_i		(clk_i), 
+		.velCase_i	(velMode), 
+		.PWM_o		(motor_o)
+	); 
+	
+	wire [31:0] display; 
 	messages MESS_U0(
-		.clk_i		(clk_i),  
+		.clk_i		(clk_i),
+		.state0_i 	(dot), 
 		.state1_i	(tempMode), 
 		.state2_i	(velMode), 
 		.temp_i		(temp), 
 		.SEg_o		(display)
 	); 
 	
+	
 	disp7 DISP_U0(
 		.clk_i		(clk_i), 
 		.number_i	(display), //4x 7-seg data cluster
 		.seg_o		(SEG_o), 
-		.an_o			(AN_o)
+		.an_o		(AN_o)
     );
+	 
+	 
+	 
+	BTGUI BT_U0(
+		.clk_i		(clk_i), 
+		.velMode_i	(velMode), 
+		.tempMode_i	(tempMode), 
+		.temp_i		(temp), 
+		.tx_o		(tx_o)
+); 
+
+	assign motor_d = motor_o; 
+	assign heater_d = heater_o; 
 endmodule

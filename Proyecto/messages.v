@@ -1,24 +1,38 @@
 module messages(
-	input clk_i,  
+	input clk_i,   
+	input 		state0_i, 
 	input [3:0] state1_i, 
 	input [3:0] state2_i, 
 	input [7:0] temp_i, 
-	output [55:0] SEg_o
+	output reg [31:0] SEg_o
 ); 
-/**
+	
 	wire [6:0] numTemp; 
 	BCD27SEG DECOD_U0(
 		.bcd_in	(state1_i), 
 		.seg_o	(numTemp)
     );
-	
+	reg [7:0] numTempR = 8'b0; 
+	always @(numTemp, state0_i, state1_i) begin 
+		if(state1_i==4'h0)
+			numTempR <= {7'b1111110, ~state0_i}; 	
+		else 
+			numTempR <= {numTemp, ~state0_i}; 	
+	end 
+		
 	wire [6:0] numVel; 
 	BCD27SEG DECOD_U1(
 		.bcd_in	(state2_i), 
 		.seg_o	(numVel)
     );
-	 
-**/
+	 reg [7:0] numVelR = 8'b0; 
+	always @(numVel, state0_i, state2_i) begin 
+		if(state2_i==4'h0)
+			numVelR <= {7'b1111110, state0_i}; 	
+		else 
+			numVelR <= {numVel, state0_i}; 	
+	end 
+
 	wire [3:0] temp_uni;  
 	wire [3:0] temp_dec; 
 	wire [3:0] temp_cen; 
@@ -31,29 +45,63 @@ module messages(
 		.cen_o	(temp_cen)
 	); 
 	
-	wire [20:0] SEg;  
-	 BCD27SEG DECOD_U1(
-		.bcd_in	(temp_uni), 
-		.seg_o	(SEg[6:0])
-    );
-	 
+	
+	wire [23:0] SEg;  
 	 BCD27SEG DECOD_U2(
-		.bcd_in	(temp_dec), 
-		.seg_o	(SEg[13:7])
+		.bcd_in	(temp_uni), 
+		.seg_o	(SEg[7:1])
     );
 	 
-	BCD27SEG DECOD_U3(
+	 BCD27SEG DECOD_U3(
+		.bcd_in	(temp_dec), 
+		.seg_o	(SEg[15:9])
+    );
+	 
+	BCD27SEG DECOD_U4(
 		.bcd_in	(temp_cen), 
-		.seg_o	(SEg[20:14])
+		.seg_o	(SEg[23:17])
     ); 
-	/**
-	 assign SEg_o = {numTemp, 7'h7F, numVel, 7'h7F,	//...
-							numVel, 7'h7F, numTemp, 7'h7F}; 
-	**/
-		assign SEg_o = {7'h7F, 7'h7F, 7'h7F, 7'h7F,	//...
-							SEg}; 
+	 
+	 assign SEg[0] 	= 1'b1; 
+	 assign SEg[8] 	= 1'b1; 
+	 assign SEg[16] 	= 1'b1; 
+	 
+	 reg [27:0] selcnt = 28'b0; 
+	 reg [8:0] state = 8'h0; 
+	 reg [8:0] stateN = 8'h0; 
+	 always @(posedge clk_i) begin 
+		stateN <= state; 
+		state <= {state2_i, state1_i, state0_i}; 
+	end 
+	
+	reg enableSw = 1'b0; 
+	always @(state, stateN) begin 
+		if(stateN!=state)  
+			enableSw <= 1'b1; 
+		else
+			enableSw <= 1'b0; 
+	end 
+	
+	always @(posedge clk_i, posedge enableSw) begin 
+		if(enableSw)
+			selcnt <= 28'b0; 
+		else if(selcnt <= 28'hFFFFFF0)
+			selcnt <= selcnt +1'b1; 
+	end 
 
+	wire sel; 
+	assign sel = selcnt[27]; 
+	always @(state1_i, state2_i, temp_i, sel, numVelR, numTempR, SEg) begin 
+		if((state1_i==3'h0)&&(state2_i==3'h0)&&(temp_i>=8'h32))
+			SEg_o <= {8'b11010001, 8'b11000101,8'b11100001, 8'hFF}; 
+		else 
+			if(~sel)
+				SEg_o <= {numVelR, 8'hFF, numTempR, 8'hFF}; 
+			else
+				SEg_o <= {8'hFF, SEg}; 
+	end 
 endmodule 
+
 
 module bin2BCD( 
 	input clk_i, //Used to register input

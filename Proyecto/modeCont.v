@@ -4,8 +4,8 @@ module modeCont(
 	input rst_i, 
 	input up_i, 
 	input down_i, 
-	output reg [3:0] tempMode_o, 
-	output reg [3:0] velMode_o, 
+	output reg [2:0] tempMode_o, 
+	output reg [2:0] velMode_o, 
 	output btnState_d
 ); 	
 
