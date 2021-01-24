@@ -10,7 +10,7 @@ module tempCont(
 
 	reg [1:0] statePulse = 2'b0; 
 	reg rst = 1'b0; 
-	always @(posedge clk_i) begin 
+	always @(posedge clk_i) begin //Detect crossover FSM 
 		case(statePulse)
 			2'b0: begin 
 				rst <= 1'b0; 
@@ -39,17 +39,13 @@ module tempCont(
 	always @(posedge clk_i, posedge rst) begin 
 		if(rst) 
 			div <= 20'h0; 
-		//else if(PWM_o)
-	//	end else begin 
-	//always @(posedge clk_i) begin 
 		else if(!div[19])
 			div <= div+1'b1; 
-	//	end 
 	end 
 
 	assign PWM_o = (div<maxCount); 
 	
-	reg [7:0] tempS = 8'b0; 
+	reg [7:0] tempS = 8'b0; //Desired temperatures 
 	always @(tempCase_i) begin 
 		case(tempCase_i)
 			3'h1: tempS<= 8'h28; //40°C
@@ -60,47 +56,13 @@ module tempCont(
 			default: tempS<= 8'h00;
 		endcase 
 	end 
-
-	always @(posedge div[15]) begin
-		if(tempS == 8'h00)
+	reg [25:0] masterDiv = 26'b0; 
+	always @(posedge clk_i)
+		masterDiv <= masterDiv+1'b1; 
+	always @(posedge masterDiv[17]) begin //On/Off control with small Duty Cycle.
+		if((tempS==8'h00)||(tempS<=temp_i))
 			maxCount <= 20'b0;
 		else  
-			if(((tempS<temp_i)&&(maxCount>20'h96))||((tempS>=temp_i)&&(maxCount<20'hFFF69)))
-				maxCount <= maxCount+tempS-temp_i;
+			maxCount <= 20'h1000; 
 	end 
-endmodule 
-
-module tempCont_tb(); 
-
-	reg clk_tb; //@100 MHz
-	//input rst_i, 
-	reg [7:0] temp_tb; 
-	reg [2:0] tempCase_tb; //40, 70, 100, 127, 150
-	wire PWM_tb;  //30-120 Hz. 
-	reg rst_tb; 
-	
-	tempCont U0_tb(clk_tb, rst_tb, temp_tb, tempCase_tb, PWM_tb); 
-	initial begin 
-		clk_tb 		= 1'b0; 
-		rst_tb 		= 1'b0; 
-		temp_tb 		= 8'b0; 
-		tempCase_tb = 3'b0; 
-	end 
-	
-	always begin 
-		#50
-			clk_tb <= ~clk_tb; 
-	end 
-	always begin 
-		#1000
-			rst_tb <= ~rst_tb; 
-	end
-	always begin 
-		#100000
-			temp_tb <= 8'h20; 
-			tempCase_tb <= 3'b1;
-		#100000
-			temp_tb <= 8'h20; 
-			tempCase_tb <= 3'h5;
-	end
 endmodule 

@@ -11,7 +11,7 @@ module pt100(
 	reg [19:0] mult = 20'b0; 
 	always @(ADC_i) 
 		//mult = ADC_i*10'h96; 			//Multiply by 150
-		mult = ADC_i*10'h8C; 			//Multiply by 140
+		mult = ADC_i*10'hA5; 			//Multiply by 165
 	assign temp_o = mult[ADC_RES+7:ADC_RES]; 	//Divide by 4096
 endmodule 
 
